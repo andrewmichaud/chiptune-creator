@@ -19,16 +19,24 @@ language.  I think the parsing should be fairly simple.
 I plan to have the following:
 
 November 8  - Language choice/possible sound generation
+
 November 15 - Full sound generation
+
 November 22 - Beginning syntax layout
+
 November 23 - Prototype: Examples of syntax prepared and some (possibly written
               in host language) demos of what generated music will sound like.
+              
 November 29 - Full syntax and example music
+
 December 1  - Preliminary Evaluation: Evaluate where I'm at and write it up.
               Provide some examples of music written in my DSL and demo them.
+              
 December 6  - Finalize.  Create more final demos of the DSL and clean up any
               ragged edges.
+              
 December 12 - Final write-up: Write up language.  Provide finished examples.
+
 December 18 - Provide demo - play some music and show off the syntax.  Maybe
               write some music live to show what that looks like.
 
