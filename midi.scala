@@ -11,18 +11,20 @@ import java.io._
 import java.util._
 import javax.sound.midi._
 
+import sys.process._
+
 object MIDIGen {
-  def main(args: Array[String]) {
-    println("midifile begin ")
+  // Data members
+  // Create MIDI sequence with 24 ticks/beat
+  var s = new Sequence(javax.sound.midi.Sequence.PPQ, 24)
 
-    try {
+  // Obtain MIDI track of sequence.
+  var t = s.createTrack()
 
-      // Create MIDI sequence with 24 ticks/beat
-      var s = new Sequence(javax.sound.midi.Sequence.PPQ, 24)
-
-      // Obtain MIDI track of sequence.
-      var t = s.createTrack()
-
+  // Abstraction functions.  Might deserve their own class or different organization at some
+  // point.
+  // NOTE tempo argument ignored until I can reverse-engineer setting MIDI tempo.
+  def initMIDI(trackname: String, tempo: Int) {
       // General MIDI stuff? -- turn on General MIDI sound set
       // NOTE I hear java doesn't like signed bytes, that might be an issue.
       var b:Array[Byte] = Array(0xF0.toByte, 0x7E, 0x7F, 0x09, 0x01, 0xF7.toByte)
@@ -30,6 +32,7 @@ object MIDIGen {
       sm.setMessage(b, 6)
       var me = new MidiEvent(sm, 0)
       t.add(me)
+
 
       // Set tempo (meta event)
       var mt = new MetaMessage()
@@ -40,7 +43,7 @@ object MIDIGen {
 
       // Set track name (meta event)
       mt = new MetaMessage()
-      var TrackName = new String("midifile track")
+      var TrackName = new String(trackname)
       mt.setMessage(0x03, TrackName.getBytes(), TrackName.length())
       me = new MidiEvent(mt, 0)
       t.add(me)
@@ -57,11 +60,19 @@ object MIDIGen {
       me = new MidiEvent(mm, 0)
       t.add(me)
 
+  }
+
+  def main(args: Array[String]) {
+    println("midifile begin ")
+
+    try {
+      initMIDI("test midifile", 5)
+
       // Set instrument to Piano
       // TODO wrap instruments for cleaner syntax
-      mm = new ShortMessage()
+      var mm = new ShortMessage()
       mm.setMessage(0xC0, 0x00, 0x00)
-      me = new MidiEvent(mm, 0)
+      var me = new MidiEvent(mm, 0)
       t.add(me)
 
       // Note on - middle C
@@ -77,7 +88,7 @@ object MIDIGen {
 		  t.add(me)
 
       // Set end of track (meta event) 19 ticks later
-      mt = new MetaMessage()
+      var mt = new MetaMessage()
       var bet: Array[Byte] = Array() // empty array
 		  mt.setMessage(0x2F, bet, 0)
 		  me = new MidiEvent(mt, 140)
@@ -91,6 +102,10 @@ object MIDIGen {
       case e: Exception => println("Exception: " + e.toString())
     }
     println("midifile end ")
+
+    // Create mp3 from midi using external app.
+    // TODO make this less dependent on an external app.
+    val convertresult = "./midtomp3 testmidi"
   }
 }
 
