@@ -59,7 +59,24 @@ object MIDIGen {
       mm.setMessage(0xB0, 0x7F, 0x00)
       me = new MidiEvent(mm, 0)
       t.add(me)
+  }
 
+  // Play a given note with given velocity and on the given channel.
+  def playNote(note: Int = 0x3C, velocity: Int = 60, channel: Int = 1, duration: Int = 60) {
+
+    // TODO check range on inputs.
+    //
+    // Note on - middle C
+    var mm = new ShortMessage()
+    mm.setMessage(ShortMessage.NOTE_ON, channel, note, velocity)
+    var me = new MidiEvent(mm, 1)
+    t.add(me)
+
+    // Note off - middle C - 120 ticks later
+    mm = new ShortMessage()
+    mm.setMessage(ShortMessage.NOTE_OFF, channel, note, velocity)
+    me = new MidiEvent(mm, duration + 1)
+    t.add(me)
   }
 
   def main(args: Array[String]) {
@@ -70,22 +87,17 @@ object MIDIGen {
 
       // Set instrument to Piano
       // TODO wrap instruments for cleaner syntax
+      // NOTE find out what the hell is happening here so I can make some constants and
+      // wrap this function up.
       var mm = new ShortMessage()
       mm.setMessage(0xC0, 0x00, 0x00)
       var me = new MidiEvent(mm, 0)
       t.add(me)
 
-      // Note on - middle C
-      mm = new ShortMessage()
-      mm.setMessage(0x90,0x3C,0x60)
-		  me = new MidiEvent(mm, 1)
-		  t.add(me)
+      playNote()
+      playNote(note = 0x4D)
+      playNote()
 
-      // Note off - middle C - 120 ticks later
-      mm = new ShortMessage()
-		  mm.setMessage(0x80,0x3C,0x40)
-		  me = new MidiEvent(mm, 121)
-		  t.add(me)
 
       // Set end of track (meta event) 19 ticks later
       var mt = new MetaMessage()
