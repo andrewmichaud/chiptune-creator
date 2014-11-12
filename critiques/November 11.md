@@ -12,4 +12,6 @@ For me, I would love to see something that simplifies input to the program. I wa
 
 #### Final Thoughts
 
-Thanks for the summary! I liked that as an addition.
+Thanks for the summary! I liked that as an addition. I would say to focus on the input and the libraries at this point. I definitely can't wait to try this project out. 
+
+Also, you mentioned to me that you'd like to have different instruments. While that would be a feature for down the road, that would definitely be awesome.
