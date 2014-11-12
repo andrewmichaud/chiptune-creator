@@ -1,34 +1,22 @@
 /**
  *
- * Generating MIDI with Scala
+ * Case class to simplify choosing notes to play.
  *
  * author Andrew Michaud
- * date 11/05/14
+ * date 11/12/14
  */
 
-import java.io._
-import java.util._
-import javax.sound.midi._
-
-import sys.process._
-
-object MIDIGen {
-  // Data members
-  var synth = MidiSystem.getSynthesizer()
-  var channels = synth.getChannels()
-
-  // Play a given note with given velocity and on the given channel.
-  def playNote(note: Note = C3, velocity: Int = 60, channel: Int = 0, duration: Int = 200) {
-    // TODO check range on inputs.
-
-    channels(channel).noteOn(note.name, velocity)
-    Thread.sleep(duration)
-    channels(channel).noteOff(note.name)
-
-  }
+package com.andrewmichaud.midi.note
 
   // Incomplete note chart, for transcribing music.
   sealed trait Note { def name: Int }
+  case object D2 extends Note {val name = 38 }
+  case object D2S extends Note { val name = 39 }
+  case object E2F extends Note { val name = 39 }
+  case object E2 extends Note { val name = 40 }
+  case object F2 extends Note { val name = 41 }
+  case object F2S extends Note { val name = 42 }
+  case object G2F extends Note { val name = 42}
   case object G2 extends Note { val name = 43 }
   case object G2S extends Note { val name = 44 }
   case object A2F extends Note { val name = 44 }
@@ -78,23 +66,3 @@ object MIDIGen {
   case object D5S extends Note { val name = 75 }
   case object E5 extends Note { val name = 76 }
   case object F5 extends Note { val name = 77 }
-
-  def main(args: Array[String]) {
-    println("midifile begin ")
-
-    try {
-      // Open synthesizer and get channels.
-      synth.open()
-
-      // Play notes.
-      playNote(note = D3)
-      playNote(note = C3)
-      playNote(note = B2)
-      playNote(note = A2)
-
-    } catch {
-      case e: Exception => println("Exception: " + e.printStackTrace())
-    }
-  }
-}
-
