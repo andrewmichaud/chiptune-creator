@@ -16,24 +16,25 @@ object MIDITester {
     try {
       // Open synthesizer and get channels.
       gen.synth.open()
+      gen.setTempo(240)
 
       // gen.play notes.
       // Song of storms?
-      gen.playNote(D2, factor=2)
-      gen.playChord(Array(A3, F3))
-      gen.playChord(Array(A3, F3))
+      gen.playNote(D2, kind=DotHalf)
+      gen.playChord(Array(A3, F3), kind=Quarter)
+      gen.playChord(Array(A3, F3), kind=Quarter)
 
-      gen.playNote(E2, factor=2)
-      gen.playNote(E3)
-      gen.playChord(Array(G3, B3), factor=1.5)
+      gen.playNote(E2, kind=DotHalf)
+      gen.playNote(E3, kind=Eighth)
+      gen.playChord(Array(G3, B3), kind=Half)
 
-      gen.playNote(F2, factor=2)
-      gen.playChord(Array(A3, C4))
-      gen.playChord(Array(A3, C4))
+      gen.playNote(F2, kind=DotHalf)
+      gen.playChord(Array(A3, C4), kind=Quarter)
+      gen.playChord(Array(A3, C4), kind=Quarter)
 
-      gen.playNote(E2, factor=2)
-      gen.playNote(E3)
-      gen.playChord(Array(F3, B3), factor=1.5)
+      gen.playNote(E2, kind=DotHalf)
+      gen.playNote(E3, kind=Eighth)
+      gen.playChord(Array(F3, B3), kind=Half)
 
       //gen.playChord(
 

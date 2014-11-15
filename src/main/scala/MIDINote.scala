@@ -8,6 +8,13 @@
 
 package com.andrewmichaud.midi.note
 
+  // Types of notes.
+  sealed trait Time { def value: Double }
+  case object Eighth extends Time { val value = 0.5 }
+  case object Quarter extends Time { val value = 1.0 }
+  case object Half extends Time { val value = 2.0 }
+  case object DotHalf extends Time { val value = 2.5 }
+
   // Incomplete note chart, for transcribing music.
   sealed trait Note { def name: Int }
   case object D2 extends Note {val name = 38 }
