@@ -7,7 +7,7 @@
 
 package com.andrewmichaud.midi.examples
 
-import com.andrewmichaud.midisugar._
+import com.andrewmichaud.midi.sugar._
 import com.andrewmichaud.midi.note._
 
 // Song of healing

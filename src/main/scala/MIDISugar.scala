@@ -15,7 +15,7 @@ import sys.process._
 
 import com.andrewmichaud.midi.note._
 
-package com.andrewmichaud.midisugar {
+package com.andrewmichaud.midi.sugar {
 
   class MIDISugar {
 

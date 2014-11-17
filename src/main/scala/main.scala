@@ -6,7 +6,7 @@
  * date 11/12/14
  */
 
-import com.andrewmichaud.midisugar._
+import com.andrewmichaud.midi.sugar._
 import com.andrewmichaud.midi.note._
 import com.andrewmichaud.midi.examples._
 
