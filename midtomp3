@@ -1,6 +1,0 @@
-#!/bin/sh
-
-echo "converting ${1}.mid to ${1}.mp3"
-
-timidity ${1}.mid -Ow -o - | lame - -b 64 ${1}.mp3
-
