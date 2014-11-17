@@ -8,6 +8,7 @@
 
 import com.andrewmichaud.midisugar._
 import com.andrewmichaud.midi.note._
+import com.andrewmichaud.midi.examples._
 
 object MIDITester {
   def main(args: Array[String]) {
@@ -16,7 +17,9 @@ object MIDITester {
     try {
       // Open synthesizer and get channels.
       gen.synth.open()
-      gen.setTempo(240)
+      gen.setTempo(102)
+
+      gen.play(SongOfHealing.Song)
 
       println("MIDI playing complete")
 
