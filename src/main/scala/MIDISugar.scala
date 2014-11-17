@@ -28,27 +28,30 @@ package com.andrewmichaud.midisugar {
       tempo = (((1.0 * t) / 60.0) / 1000.0)
     }
 
-    // Play a given note with given velocity and on the given channel.
-    def playNote(note: Note = C3, velocity: Int = 120, channel: Int = 0, kind: Time = Quarter) {
+    // Play a given note or chord.
+    def play(e: Element) {
       // TODO check range on inputs.
-      var duration = (kind.value/ tempo).toLong
+      var velocity = 200
+      var channel = 0
 
-      channels(channel).noteOn(note.name, velocity)
-      Thread.sleep(duration.toLong)
-      channels(channel).noteOff(note.name)
-    }
+      e match {
+        case e:Note => {
+          channels(channel).noteOn(e.tone, velocity)
+          Thread.sleep((e.time / tempo).toLong)
+          channels(channel).noteOff(e.tone)
+          }
+        case e:Chord => {
 
-    // Play the simple kind of chord, where some number of notes all have the same duration.
-    def playChord(notes: Array[Note], velocity: Int = 120, channel: Int = 0, kind: Time = Quarter) {
-      var duration = (kind.value / tempo).toLong
+          // Blatantly ignores multiple durations, should fix that.
+          for (note <- e.notes) {
+            channels(channel).noteOn(note.tone, velocity)
+          }
 
-      for (note <- notes) {
-        channels(channel).noteOn(note.name, velocity)
-      }
-
-      Thread.sleep(duration)
-      for (note <- notes) {
-        channels(channel).noteOff(note.name)
+          Thread.sleep((e.notes(0).time/ tempo).toLong)
+          for (note <- e.notes) {
+            channels(channel).noteOff(note.tone)
+          }
+        }
       }
     }
   }
