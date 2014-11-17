@@ -84,9 +84,15 @@ abstract class Element {
   }
 }
 
-case class Note(tonein: String, timein: String) extends Element {
+// Single note.
+case class Note(tonein: String, timein: String = "Quarter") extends Element {
   val time = timeConvert(timein)
   val tone = toneConvert(tonein)
 }
+
+// Single chord.
 case class Chord(notes: Array[Note]) extends Element
+
+// Some number of musical elements.
+case class Section(elements: Array[Element]) extends Element
 

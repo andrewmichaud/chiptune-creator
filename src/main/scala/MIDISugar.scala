@@ -35,11 +35,15 @@ package com.andrewmichaud.midisugar {
       var channel = 0
 
       e match {
+
+        // Play a single note.
         case e:Note => {
           channels(channel).noteOn(e.tone, velocity)
           Thread.sleep((e.time / tempo).toLong)
           channels(channel).noteOff(e.tone)
           }
+
+        // Play a single chord.
         case e:Chord => {
 
           // Blatantly ignores multiple durations, should fix that.
@@ -50,6 +54,18 @@ package com.andrewmichaud.midisugar {
           Thread.sleep((e.notes(0).time/ tempo).toLong)
           for (note <- e.notes) {
             channels(channel).noteOff(note.tone)
+          }
+        }
+
+        // Play a section, which is composed of other elements.
+        case e:Section => {
+          for (element <- e.elements) {
+            element match {
+              case element:Note => play(element)
+              case element:Chord => play(element)
+              case element:Section => play(element)
+              case _ => {}
+            }
           }
         }
       }
