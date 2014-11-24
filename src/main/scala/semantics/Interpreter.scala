@@ -1,29 +1,54 @@
 package com.andrewmichaud.chiptune
 
-import com.andrewmichaud.chiptune.ir._
+import scala.collection.mutable.Map
 
 import com.andrewmichaud.midi.note._
 import com.andrewmichaud.midi.sugar._
 
-package object semantics {
-  def eval(ast: AST): () = ast match {
-    case Let(label, value) => {
+import com.andrewmichaud.chiptune.ir._
 
+package object semantics {
+
+  var table:Map[String,Element] = Map()
+
+  def eval(ast: AST):Any = ast match {
+    case Let(label, value) => {
+      // Strip whitespace
+      val tlabel = label.trim
+      val tvalue = value.trim
+
+      // Get tokens from value string.
+      val tokens = tvalue.split("\\s+")
+      println("Tokens:\n")
+      for (token <- tokens) {
+        println(s"  $token")
+      }
     }
 
-    case play(label) => {
+    case Play(label) => {
+
       // TODO clean this up.
       // And actually let the user set tempo.
       println("MIDI playing begin")
       var gen = new Sugar
+
       try {
-        // Open synthesizer and get channels.
-        gen.synth.open()
-        gen.setTempo(102)
+        // Check if label actually exists.
+        if (table contains label) {
 
-        gen.play(SongOfHealing.Song)
+          // Open synthesizer and get channels.
+          gen.synth.open()
+          gen.setTempo(102)
 
-        println("MIDI playing complete")
+          // lol
+          gen.play(table get label get)
+
+          println("MIDI playing complete")
+
+        } else {
+          // TODO throw an error probably.
+          println("Label doesn't exist!")
+        }
 
       } catch {
         case e: Exception => println("Exception: " + e.printStackTrace())
@@ -31,3 +56,4 @@ package object semantics {
       }
     }
   }
+}
