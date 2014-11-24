@@ -91,8 +91,14 @@ case class Note(tonein: String, timein: String = "Quarter") extends Element {
 }
 
 // Single chord.
-case class Chord(notes: Array[Note]) extends Element
+case class Chord(notes: List[Note]) extends Element
+object Chord {
+  def apply(notes: Note*) = new Chord(notes.toList)
+}
 
 // Some number of musical elements.
-case class Section(elements: Array[Element]) extends Element
+case class Section(elements: List[Element]) extends Element
+object Section {
+  def apply(elements: Element*) = new Section(elements.toList)
+}
 

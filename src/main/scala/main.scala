@@ -13,7 +13,7 @@ import com.andrewmichaud.midi.examples._
 object MIDITester {
   def main(args: Array[String]) {
     println("MIDI playing begin")
-    var gen = new MIDISugar
+    var gen = new Sugar
     try {
       // Open synthesizer and get channels.
       gen.synth.open()

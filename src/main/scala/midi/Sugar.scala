@@ -17,7 +17,7 @@ import com.andrewmichaud.midi.note._
 
 package com.andrewmichaud.midi.sugar {
 
-  class MIDISugar {
+  class Sugar {
 
     // Data members
     var synth = MidiSystem.getSynthesizer()
