@@ -1,0 +1,9 @@
+It looks like the project is going along well. I enjoyed learning about the project in class on Monday. I particularly like the composability of everything---it makes the language very powerful without adding much more complexity. What follows are just some musings and thoughts from reading through the code in the repository.
+
+It looks like your IR is split into two files of case classes, one in the ir directory and one in the midi directory. Is there a reason for this division? It doesn't seem intuitively necessary to split up the IR into two pieces like that (but there could be a reason I don't know about).
+
+Looking at your parser/semantics, things seem really simple and straightforward. It was pretty easy to follow everything and understand how it's all constructed. I don't really have any major high-level concerns or anything like that; it seems pretty clear. I think the improvements to your parser that you've outlined definitely make sense. A few more nitty gritty comments:
+* You could probably construct your table in fewer lines if you wanted to. I'd do something like map the list of note names to a list of key-value tuples from which you could construct the map. (Something like `List("D2", "D2S", "E2F", ...) map ((x: String) => (x, List(Note(x)))) toMap` should work.)
+* You strip whitespace from labels and values in your semantics. This seems like something that easily could (and logically should) be done in the parser, not the semantics. Similarly, spliting tokens up to analyze them seems like something that could (and should) easily be done using parser combinators.
+* I think this could probably all benefit from using Option types. It would reduce the number of calls to get, at the very least.
+* The line `var gen = new Sugar` is really strange. What does gen stand for? I'd guess that the Sugar class should be renamed to something more descriptive of its actual functionality.
