@@ -88,31 +88,60 @@ package object semantics {
       var tokens = value.trim.split("""\s""").toList
       println(s"Tokens: $tokens \n")
 
+      if (tokens.length < 1) {
+        return "Please provide a value to assign."
+      }
+
       for (token <- tokens) {
           println(s"one token is $token")
 
         // Tokens must be previously defined to be valid OR a valid primitive.
         if (!(table contains token)) {
 
-          // See if this is a note primitive - it is if the first part is there.
-          val pieces = token.split("""[\W_]""")
+          // If it isn't in the table, it might be composed of primitives.  It could be a note or
+          // chord.
+          // Chords must be separated by |, so handle that first.
+          val pieces = token.split("""[|]""")
 
-          println("Pieces of token:")
+          println("Notes in token:")
           for (piece <- pieces) {
-            println(s" piece: $piece")
+            println(s" note: $piece")
           }
 
+          // This is a single note.
           if (pieces.length < 2) {
 
-            return s"$token is one piece and not defined.  Please only use defined labels."
+            // Create note.
+            val notepieces = token.split("""[\W_]""")
 
-          } else if (!(table contains pieces(0))) {
-            return s"$token is not composed of defined pieces"
+            if (table contains notepieces(0)) {
+              newValue = Note(notepieces(0), notepieces(1)) :: newValue
+            } else {
+              return s"${notepieces(0)} is not in the table and $token is invalid."
+            }
+
+          // This is a chord.
+          } else {
+
+            // Create all notes in chord, if they are valid.
+            var notes = List[Note]()
+            for (piece <- pieces) {
+              val notepieces = piece.split("""[\W_]""")
+
+              if (table contains notepieces(0)) {
+                notes = Note(notepieces(0), notepieces(1)) :: notes
+
+              } else {
+                return s"${notepieces(0)} is not in the table, so $piece is invalid and so is $token"
+              }
+            }
+
+            // Stitch notes into chord.  We put them in in reverse order, so flip them around.
+            val chord = Chord(notes.reverse)
+
+            newValue = chord :: newValue
           }
 
-          // Otherwise, build a note and add it to the list.
-          // The note constructor will handle invalid tones or times.
-          newValue = Note(pieces(0), pieces(1)) :: newValue
         } else {
 
           // If token is defined, prepend to list.  All values are defined backwards because prepending is fast.
@@ -145,8 +174,10 @@ package object semantics {
           gen.setTempo(tempo)
 
           // Synthesize elements.
-          val song = Section((table get label get).reverse)
-          gen.play(song)
+          val song = (table get label get).reverse
+          for (thing <- song) {
+            gen.play(thing)
+          }
 
           return "MIDI playing complete"
 
