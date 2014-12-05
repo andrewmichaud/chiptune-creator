@@ -14,7 +14,7 @@ import com.andrewmichaud.chiptune.parser.ChipParser
 import com.andrewmichaud.chiptune.semantics.eval
 
 object ChiptuneCreator extends EvalLoop with App {
-  override def prompt = "> "
+  override def prompt = ""
 
   loop { line =>
     ChipParser(line) match {

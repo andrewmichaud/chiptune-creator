@@ -14,5 +14,6 @@ package object ir {
 
   implicit class ExprBuilder(val label: String) {
     def is(value: String) = Let(label, value)
+    def play = Play(label)
   }
 }

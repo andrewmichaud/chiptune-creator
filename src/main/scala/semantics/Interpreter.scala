@@ -9,6 +9,9 @@ import com.andrewmichaud.chiptune.ir._
 
 package object semantics {
 
+  // Tempo. Defaults to 120
+  var tempo = 120
+
   // Table of things we know about.
   var table:Map[String,List[Element]] = Map()
 
@@ -80,54 +83,50 @@ package object semantics {
 
       // Strip whitespace
       val tlabel = label.trim
-      val tvalue = value.trim
 
       // Get tokens from value string.
-      val tokens = tvalue.split("\\s+")
-      println("Tokens:\n")
-      for (token <- tokens) {
-        println(s"one token is $token")
+      var tokens = value.trim.split("""\s""").toList
+      println(s"Tokens: $tokens \n")
 
-        // NOTE: I'm forcing note primitives to be of the form A1-Quarter A2S-Half,
-        // etc etc.
+      for (token <- tokens) {
+          println(s"one token is $token")
+
         // Tokens must be previously defined to be valid OR a valid primitive.
-        // TODO make the error message nicer.
         if (!(table contains token)) {
 
           // See if this is a note primitive - it is if the first part is there.
-          // TODO Being this lazy means you could sneak "Half" through as a valid thing,
-          // and that's not right.  Deal with that later.
-          val pieces = token.split("""\-""")
+          val pieces = token.split("""[\W_]""")
 
-          print("pieces: ")
+          println("Pieces of token:")
           for (piece <- pieces) {
-            println(s"piece: $piece")
+            println(s" piece: $piece")
           }
+
           if (pieces.length < 2) {
 
-            throw new Exception(s"$token is not defined or composed of defined pieces")
+            return s"$token is one piece and not defined.  Please only use defined labels."
 
           } else if (!(table contains pieces(0))) {
-            // TODO this lets you apply durations to any existing label, which also isn't right.
-            throw new Exception(s"$token is not composed of defined pieces")
+            return s"$token is not composed of defined pieces"
           }
 
           // Otherwise, build a note and add it to the list.
           // The note constructor will handle invalid tones or times.
-          newValue = Note(pieces(0), pieces(2)) :: newValue
-        }
+          newValue = Note(pieces(0), pieces(1)) :: newValue
+        } else {
 
-        // If token is defined, prepend to list.  All values are defined backwards because
-        // prepending is fast.
-        val tokenVal = table get token get
+          // If token is defined, prepend to list.  All values are defined backwards because prepending is fast.
+          val tokenVal = table get token get
 
-        for (element <- tokenVal) {
-          newValue = element :: newValue
+          for (element <- tokenVal) {
+            newValue = element :: newValue
+          }
         }
       }
 
       // If we got here, all tokens were valid.  Add this new value into our map.
       table = table + (label -> newValue)
+      return s"Set $label to $newValue."
     }
 
     case Play(label) => {
@@ -143,22 +142,36 @@ package object semantics {
 
           // Open synthesizer and get channels.
           gen.synth.open()
-          gen.setTempo(102)
+          gen.setTempo(tempo)
 
           // Synthesize elements.
           val song = Section((table get label get).reverse)
           gen.play(song)
 
-          println("MIDI playing complete")
+          return "MIDI playing complete"
 
         } else {
           // TODO throw an error probably.
-          println("Label doesn't exist!")
+          return "Label doesn't exist!"
         }
 
       } catch {
         case e: Exception => println("Exception: " + e.printStackTrace())
-        println("MIDI playing failed")
+        return "MIDI playing failed"
+      }
+    }
+
+    case Tempo(value) => {
+
+      // Set tempo.
+      // TODO bounds check?
+      try {
+        tempo = value.toInt
+        return s"Tempo set to $value"
+      } catch {
+        case e:Exception => {
+          return s"Failed to set tempo, $value invalid tempo."
+        }
       }
     }
   }

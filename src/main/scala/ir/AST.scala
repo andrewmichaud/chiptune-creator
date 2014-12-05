@@ -11,3 +11,4 @@ sealed abstract class Expr extends AST
 
 case class Let(label: String, value: String) extends Expr
 case class Play(label: String) extends Expr
+case class Tempo(value: String) extends Expr
