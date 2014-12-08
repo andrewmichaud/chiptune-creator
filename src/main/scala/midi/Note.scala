@@ -14,18 +14,34 @@ abstract class Element {
   // Convert from a string to the corresponding
   // time multiplier.
   def timeConvert(x: String): Double = x match {
+    case "Sixteenth" => 0.25
+    case "16" => 0.25
     case "Eighth" => 0.5
+    case "8" => 0.5
+    case "DotEighth" => 0.75
+    case ".8" => 0.75
+    case "8." => 0.75
     case "Quarter" => 1.0
+    case "4" => 1.0
     case "DotQuarter" => 1.5
+    case ".4" => 1.5
+    case "4." => 1.5
     case "Half" => 2.0
+    case "2" => 2.0
     case "DotHalf" => 2.5
+    case "2." => 2.5
+    case ".2" => 2.5
     case "Whole" => 4.0
+    case "1" => 4.0
     case _ => 1.0
   }
 
   // Convert from a string to the corresponding
   // MIDI tone number.
   def toneConvert(x: String): Int = x match {
+    case "C2" => 35
+    case "C2S" => 36
+    case "D2F" => 37
     case "D2" => 38
     case "D2S" => 39
     case "E2F" => 39

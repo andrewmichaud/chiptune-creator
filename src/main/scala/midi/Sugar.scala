@@ -47,18 +47,14 @@ package com.andrewmichaud.midi.sugar {
         // Play a single chord.
         case e:Chord => {
 
-          // Sort notes smallest to largest.
-          var notes = e.notes.sortBy(_.time)
-
           // Blatantly ignores multiple durations, should fix that.
-          for (note <- notes) {
+          for (note <- e.notes) {
             channels(channel).noteOn(note.tone, velocity)
           }
 
-          notes = notes.reverse
+          Thread.sleep((e.notes(0).time / tempo).toLong)
 
-          for (note <- notes) {
-            Thread.sleep((note.time/ tempo).toLong)
+          for (note <- e.notes) {
             channels(channel).noteOff(note.tone)
           }
         }
