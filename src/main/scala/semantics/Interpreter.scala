@@ -79,7 +79,7 @@ package object semantics {
     case Let(label, value) => {
 
       // Create new array for the value.
-      var newValue = List[Element]()
+      var newValue = scala.collection.mutable.ListBuffer[Element]()
 
       // Strip whitespace
       val tlabel = label.trim
@@ -115,7 +115,7 @@ package object semantics {
             val notepieces = token.split("""[\W_]""")
 
             if (table contains notepieces(0)) {
-              newValue = Note(notepieces(0), notepieces(1)) :: newValue
+              newValue += Note(notepieces(0), notepieces(1))
             } else {
               return s"${notepieces(0)} is not in the table and $token is invalid."
             }
@@ -124,22 +124,22 @@ package object semantics {
           } else {
 
             // Create all notes in chord, if they are valid.
-            var notes = List[Note]()
+            var notes = scala.collection.mutable.ListBuffer[Note]()
             for (piece <- pieces) {
               val notepieces = piece.split("""[\W_]""")
 
               if (table contains notepieces(0)) {
-                notes = Note(notepieces(0), notepieces(1)) :: notes
+                notes += Note(notepieces(0), notepieces(1))
 
               } else {
                 return s"${notepieces(0)} is not in the table, so $piece is invalid and so is $token"
               }
             }
 
-            // Stitch notes into chord.  We put them in in reverse order, so flip them around.
-            val chord = Chord(notes.reverse)
+            // Stitch notes into chord.
+            val chord = Chord(notes.toList)
 
-            newValue = chord :: newValue
+            newValue += chord
           }
 
         } else {
@@ -148,13 +148,13 @@ package object semantics {
           val tokenVal = table get token get
 
           for (element <- tokenVal) {
-            newValue = element :: newValue
+            newValue += element
           }
         }
       }
 
       // If we got here, all tokens were valid.  Add this new value into our map.
-      table = table + (label -> newValue)
+      table = table + (label -> newValue.toList)
       return s"Set $label to $newValue."
     }
 
@@ -174,7 +174,7 @@ package object semantics {
           gen.setTempo(tempo)
 
           // Synthesize elements.
-          val song = (table get label get).reverse
+          val song = (table get label get)
           for (thing <- song) {
             gen.play(thing)
           }

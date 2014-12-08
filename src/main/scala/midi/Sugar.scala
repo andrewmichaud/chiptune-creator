@@ -31,6 +31,7 @@ package com.andrewmichaud.midi.sugar {
     // Play a given note or chord.
     def play(e: Element) {
       // TODO check range on inputs.
+      // TODO allow setable velocity?
       var velocity = 200
       var channel = 0
 
@@ -46,13 +47,18 @@ package com.andrewmichaud.midi.sugar {
         // Play a single chord.
         case e:Chord => {
 
+          // Sort notes smallest to largest.
+          var notes = e.notes.sortBy(_.time)
+
           // Blatantly ignores multiple durations, should fix that.
-          for (note <- e.notes) {
+          for (note <- notes) {
             channels(channel).noteOn(note.tone, velocity)
           }
 
-          Thread.sleep((e.notes(0).time/ tempo).toLong)
-          for (note <- e.notes) {
+          notes = notes.reverse
+
+          for (note <- notes) {
+            Thread.sleep((note.time/ tempo).toLong)
             channels(channel).noteOff(note.tone)
           }
         }

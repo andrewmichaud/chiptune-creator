@@ -16,8 +16,10 @@ abstract class Element {
   def timeConvert(x: String): Double = x match {
     case "Eighth" => 0.5
     case "Quarter" => 1.0
+    case "DotQuarter" => 1.5
     case "Half" => 2.0
     case "DotHalf" => 2.5
+    case "Whole" => 4.0
     case _ => 1.0
   }
 
