@@ -17,15 +17,21 @@ package object semantics {
 
   // Prefill all notes and other useful things.
   // We'll give the notes a value but it's not one that we'll end up using.
-  table = table ++ (List(
-    "D2", "D2S", "E2F", "E2", "F2", "F2S", "G2F", "G2", "G2S", "A2F", "A2", "A2S", "B2F", "B2",
-    "C3", "C3S", "D3F", "D3", "D3S", "E3F", "E3", "F3", "F3S", "G3F", "G3", "G3S", "A3F", "A3", "A3S", "B3F",
-    "B3", "C4", "C4S", "D4F", "D4", "D4S", "E4F", "E4", "F4", "F4S", "G4F", "G4", "G4S", "A4F", "A4", "A4S",
-    "B4F", "B4", "C5", "C5S", "D5F", "D5", "E5F", "D5S", "E5", "F5"
-  ) map ((x: String) => (x, List(Note(x)))) toMap)
+  table = table ++ {
+    val letters = List("A", "B", "C", "D", "E", "F", "G")
+    val octaves = 0 to 9
+    val accidentals = List("F", "\u266D", "\uD834\uDD2B", "S", "♯", "𝄪", "N", "♮", "")
+    var notes = "rest" :: (for (l <- letters; o <- octaves; a <- accidentals) yield l + o + a)
+
+   for (combo <- notes) {
+     println(s"a combo is $combo")
+   }
+   notes map ((x: String) => (x, List(Note(x)))) toMap
+  }
 
   def eval(ast: AST):Any = ast match {
     case Let(label, value) => {
+      println(s"Value in Let is $value")
 
       // Create new array for the value.
       var newValue = scala.collection.mutable.ListBuffer[Element]()
@@ -57,7 +63,7 @@ package object semantics {
             println(s" note: $piece")
           }
 
-          // This is a single note.
+          // This is a single note or rest.
           if (pieces.length < 2) {
 
             // Create note.
@@ -107,7 +113,7 @@ package object semantics {
       return s"Set $label to $newValue."
     }
 
-    case Play(label) => {
+    case Play(labels) => {
 
       // TODO clean this up.
       // And actually let the user set tempo.
@@ -116,24 +122,25 @@ package object semantics {
 
       try {
         // Check if label actually exists.
-        if (table contains label) {
-
-          // Open synthesizer and get channels.
-          gen.synth.open()
-          gen.setTempo(tempo)
-
-          // Synthesize elements.
-          val song = (table get label get)
-          for (thing <- song) {
-            gen.play(thing)
+        for (label <- labels) {
+          if (!(table contains label)) {
+            return s"Label $label doesn't exist!"
           }
-
-          return "MIDI playing complete"
-
-        } else {
-          // TODO throw an error probably.
-          return "Label doesn't exist!"
         }
+
+        // Open synthesizer and get channels.
+        gen.synth.open()
+        gen.setTempo(tempo)
+
+        var things = scala.collection.mutable.ListBuffer[Element]()
+
+        for (label <- labels) {
+          things += Section(table get label get)
+        }
+
+        gen.playmult(things.toList)
+
+        return "MIDI playing complete"
 
       } catch {
         case e: Exception => println("Exception: " + e.printStackTrace())
