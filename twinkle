@@ -1,0 +1,11 @@
+tempo 100
+twinkle1 = C3 C3
+twinkle2 = G3 G3
+little = A3 A3
+star  = G3-Half
+howI = F3 F3
+wonder = E3 E3
+whatyou = D3 D3
+are = C3-Half
+all = twinkle1 twinkle2 little star howI wonder whatyou are
+play all

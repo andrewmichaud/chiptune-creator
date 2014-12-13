@@ -78,9 +78,19 @@ package object semantics {
             // Otherwise, freshly create it.
             } else {
               val notepieces = token.split("""[\W_^\.]""")
+              println("notepieces in token:")
+              for (piece <- notepieces) {
+                println(s"notepiecs: $piece")
+              }
 
               if (table contains notepieces(0)) {
-                newValue += Note(notepieces(0), notepieces(1))
+
+                // Differentiate between notes with time specified and those without.
+                if (notepieces.length <= 1) {
+                  newValue += Note(notepieces(0))
+                } else {
+                  newValue += Note(notepieces(0), notepieces(1))
+                }
               } else {
                 return s"${notepieces(0)} is not in the table and $token is invalid."
               }
@@ -95,7 +105,12 @@ package object semantics {
               val notepieces = piece.split("""[\W_^\.]""")
 
               if (table contains notepieces(0)) {
-                notes += Note(notepieces(0), notepieces(1))
+                // Differentiate between notes with time specified and those without.
+                if (notepieces.length <= 1) {
+                  newValue += Note(notepieces(0))
+                } else {
+                  newValue += Note(notepieces(0), notepieces(1))
+                }
 
               } else {
                 return s"${notepieces(0)} is not in the table, so $piece is invalid and so is $token"
