@@ -29,29 +29,6 @@ package com.andrewmichaud.midi.sugar {
     }
 
     // Play something.
-    def playmult(es: scala.collection.immutable.List[Element]) {
-      // TODO check range on inputs.
-      // TODO allow setable velocity?
-      var velocity = 200
-      var channel = 0
-
-      for (e <- es) {
-        e match {
-
-          // Play a single note.
-          case e:Note => play(e, channel)
-
-          // Play a single chord.
-          case e:Chord => play(e, channel)
-
-          // Play a section, which is composed of other elements.
-          case e:Section => play(e, channel)
-        }
-
-        channel += 1
-      }
-    }
-
     def play(e: Element, channel: Int) {
       var velocity = 200
         e match {

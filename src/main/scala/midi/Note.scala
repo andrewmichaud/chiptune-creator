@@ -46,7 +46,6 @@ abstract class Element {
   def toneConvert(x: String): Int = x match {
     // Build a MIDI value.
     case noteRegex() => {
-      println(s"Received $x")
       var midivalue:Int = 12
 
       // Add note value to MIDI value.
@@ -67,10 +66,8 @@ abstract class Element {
       // Add octave number to MIDI value.
       val octave = (x drop 1 take 1)
       midivalue += (12 * octave.toInt)
-      println(s"midivalue is $midivalue")
 
       val accidentals = x.drop(2)
-      println(s"Finally we have ${x drop 2}")
       midivalue += {
         accidentals match {
           case "F" => -1
@@ -87,7 +84,6 @@ abstract class Element {
         }
       }
 
-      println(s"midivalue here was $midivalue")
       midivalue
     }
 

@@ -63,16 +63,27 @@ package object semantics {
             println(s" note: $piece")
           }
 
-          // This is a single note or rest.
+          // This is a single note or rest, or something previously defined.
           if (pieces.length < 2) {
 
-            // Create note.
-            val notepieces = token.split("""[\W_]""")
+            // Check if this thing exists.
+            if (table contains token) {
+              // Add exsting token to list.
+              val tokenVal = table get token get
 
-            if (table contains notepieces(0)) {
-              newValue += Note(notepieces(0), notepieces(1))
+              for (element <- tokenVal) {
+                newValue += element
+              }
+
+            // Otherwise, freshly create it.
             } else {
-              return s"${notepieces(0)} is not in the table and $token is invalid."
+              val notepieces = token.split("""[\W_^\.]""")
+
+              if (table contains notepieces(0)) {
+                newValue += Note(notepieces(0), notepieces(1))
+              } else {
+                return s"${notepieces(0)} is not in the table and $token is invalid."
+              }
             }
 
           // This is a chord.
@@ -81,7 +92,7 @@ package object semantics {
             // Create all notes in chord, if they are valid.
             var notes = scala.collection.mutable.ListBuffer[Note]()
             for (piece <- pieces) {
-              val notepieces = piece.split("""[\W_]""")
+              val notepieces = piece.split("""[\W_^\.]""")
 
               if (table contains notepieces(0)) {
                 notes += Note(notepieces(0), notepieces(1))
@@ -99,7 +110,7 @@ package object semantics {
 
         } else {
 
-          // If token is defined, prepend to list.  All values are defined backwards because prepending is fast.
+          // Add exsting token to list.
           val tokenVal = table get token get
 
           for (element <- tokenVal) {
@@ -113,7 +124,7 @@ package object semantics {
       return s"Set $label to $newValue."
     }
 
-    case Play(labels) => {
+    case Play(label) => {
 
       // TODO clean this up.
       // And actually let the user set tempo.
@@ -122,23 +133,15 @@ package object semantics {
 
       try {
         // Check if label actually exists.
-        for (label <- labels) {
-          if (!(table contains label)) {
-            return s"Label $label doesn't exist!"
-          }
+        if (!(table contains label)) {
+          return s"Label $label doesn't exist!"
         }
 
         // Open synthesizer and get channels.
         gen.synth.open()
         gen.setTempo(tempo)
 
-        var things = scala.collection.mutable.ListBuffer[Element]()
-
-        for (label <- labels) {
-          things += Section(table get label get)
-        }
-
-        gen.playmult(things.toList)
+        gen.play(Section(table get label get), 0)
 
         return "MIDI playing complete"
 
