@@ -6,8 +6,9 @@ scala:
   - 2.11.8
 
 jdk:
+  - oraclejdk7
   - oraclejdk8
-  - openjdk8
+  - openjdk7
 
 script:
   - sbt clean test
