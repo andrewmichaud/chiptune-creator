@@ -18,8 +18,7 @@ object ChipParser extends JavaTokenParsers with PackratParsers {
 
   // Expressions
   lazy val expr: PackratParser[Expr] =
-    (   """\S*""".r~"="~"""[\S\s]*""".r ^^ {case label~"="~value => label is value}
-      | "play"~"""[\S\s]*""".r ^^ {case "play"~label => Play(label)}
-      | "tempo"~"""[0-9]*""".r ^^ {case "tempo"~num => Tempo(num)}
-      )
+    ("""\S*""".r ~ "=" ~ """[\S\s]*""".r ^^ { case label ~ "=" ~ value => label is value }
+      | "play" ~ """[\S\s]*""".r ^^ { case "play" ~ label => Play(label) }
+      | "tempo" ~ """[0-9]*""".r ^^ { case "tempo" ~ num => Tempo(num) })
 }

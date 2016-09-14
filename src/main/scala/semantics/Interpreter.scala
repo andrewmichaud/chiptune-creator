@@ -13,7 +13,7 @@ package object semantics {
   var tempo = 120
 
   // Table of things we know about.
-  var table:Map[String,List[Element]] = Map()
+  var table: Map[String, List[Element]] = Map()
 
   // Prefill all notes and other useful things.
   // We'll give the notes a value but it's not one that we'll end up using.
@@ -23,13 +23,13 @@ package object semantics {
     val accidentals = List("F", "\u266D", "\uD834\uDD2B", "S", "♯", "𝄪", "N", "♮", "")
     var notes = "rest" :: (for (l <- letters; o <- octaves; a <- accidentals) yield l + o + a)
 
-   for (combo <- notes) {
-     println(s"a combo is $combo")
-   }
-   notes map ((x: String) => (x, List(Note(x)))) toMap
+    for (combo <- notes) {
+      println(s"a combo is $combo")
+    }
+    notes map ((x: String) => (x, List(Note(x)))) toMap
   }
 
-  def eval(ast: AST):Any = ast match {
+  def eval(ast: AST): Any = ast match {
     case Let(label, value) => {
       println(s"Value in Let is $value")
 
@@ -48,7 +48,7 @@ package object semantics {
       }
 
       for (token <- tokens) {
-          println(s"one token is $token")
+        println(s"one token is $token")
 
         // Tokens must be previously defined to be valid OR a valid primitive.
         if (!(table contains token)) {
@@ -68,15 +68,15 @@ package object semantics {
 
             // Check if this thing exists.
             if (table contains token) {
-              // Add exsting token to list.
+              // Add existing token to list.
               val tokenVal = table get token get
 
               for (element <- tokenVal) {
                 newValue += element
               }
 
-            // Otherwise, freshly create it.
             } else {
+              // Otherwise, freshly create it.
               val notepieces = token.split("""[\W_^\.]""")
               println("notepieces in token:")
               for (piece <- notepieces) {
@@ -96,9 +96,9 @@ package object semantics {
               }
             }
 
-          // This is a chord.
           } else {
 
+            // This is a chord.
             // Create all notes in chord, if they are valid.
             var notes = scala.collection.mutable.ListBuffer[Note]()
             for (piece <- pieces) {
@@ -136,7 +136,7 @@ package object semantics {
 
       // If we got here, all tokens were valid.  Add this new value into our map.
       table = table + (label -> newValue.toList)
-      return s"Set $label to $newValue."
+      s"Set $label to $newValue."
     }
 
     case Play(label) => {
@@ -161,8 +161,9 @@ package object semantics {
         return "MIDI playing complete"
 
       } catch {
-        case e: Exception => println("Exception: " + e.printStackTrace())
-        return "MIDI playing failed"
+        case e: Exception =>
+          println("Exception: " + e.printStackTrace())
+          return "MIDI playing failed"
       }
     }
 
@@ -174,7 +175,7 @@ package object semantics {
         tempo = value.toInt
         return s"Tempo set to $value"
       } catch {
-        case e:Exception => {
+        case e: Exception => {
           return s"Failed to set tempo, $value invalid tempo."
         }
       }

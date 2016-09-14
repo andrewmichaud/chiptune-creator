@@ -46,10 +46,10 @@ abstract class Element {
   def toneConvert(x: String): Int = x match {
     // Build a MIDI value.
     case noteRegex() => {
-      var midivalue:Int = 12
+      var midivalue: Int = 12
 
       // Add note value to MIDI value.
-      val letter:Char = x.head
+      val letter: Char = x.head
       midivalue += {
         letter match {
           case 'C' => 0

@@ -26,7 +26,7 @@ object ChiptuneCompiler extends EvalLoop with App {
       for (line <- lines) {
         ChipParser(line) match {
           case ChipParser.Success(t, _) => eval(t)
-          case e: ChipParser.NoSuccess  => println(e)
+          case e: ChipParser.NoSuccess => println(e)
         }
       }
     } catch {

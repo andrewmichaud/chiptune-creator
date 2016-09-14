@@ -15,10 +15,9 @@ import com.andrewmichaud.chiptune.semantics.eval
 
 object ChiptuneInterpreter extends EvalLoop with App {
   override def prompt = ""
-
   loop { line =>
     ChipParser(line) match {
-      case ChipParser.Success(t,_) => println(eval(t))
+      case ChipParser.Success(t, _) => println(eval(t))
       case e: ChipParser.NoSuccess => println(e)
     }
   }

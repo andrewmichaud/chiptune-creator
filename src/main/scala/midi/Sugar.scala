@@ -31,41 +31,41 @@ package com.andrewmichaud.midi.sugar {
     // Play something.
     def play(e: Element, channel: Int) {
       var velocity = 200
-        e match {
-          // Play a single note.
-          case e:Note => {
-            channels(channel).noteOn(e.tone, velocity)
-            Thread.sleep((e.time / tempo).toLong)
-            channels(channel).noteOff(e.tone)
+      e match {
+        // Play a single note.
+        case e: Note => {
+          channels(channel).noteOn(e.tone, velocity)
+          Thread.sleep((e.time / tempo).toLong)
+          channels(channel).noteOff(e.tone)
+        }
+
+        // Play a single chord.
+        case e: Chord => {
+
+          // Blatantly ignores multiple durations, should fix that.
+          for (note <- e.notes) {
+            channels(channel).noteOn(note.tone, velocity)
           }
 
-          // Play a single chord.
-          case e:Chord => {
+          Thread.sleep((e.notes(0).time / tempo).toLong)
 
-            // Blatantly ignores multiple durations, should fix that.
-            for (note <- e.notes) {
-              channels(channel).noteOn(note.tone, velocity)
-            }
-
-            Thread.sleep((e.notes(0).time / tempo).toLong)
-
-            for (note <- e.notes) {
-              channels(channel).noteOff(note.tone)
-            }
+          for (note <- e.notes) {
+            channels(channel).noteOff(note.tone)
           }
+        }
 
-          // Play a section, which is composed of other elements.
-          case e:Section => {
-            for (element <- e.elements) {
-              element match {
-                case element:Note => play(element, channel)
-                case element:Chord => play(element, channel)
-                case element:Section => play(element, channel)
-                case _ => {}
-              }
+        // Play a section, which is composed of other elements.
+        case e: Section => {
+          for (element <- e.elements) {
+            element match {
+              case element: Note => play(element, channel)
+              case element: Chord => play(element, channel)
+              case element: Section => play(element, channel)
+              case _ => {}
             }
           }
         }
       }
+    }
   }
 }
