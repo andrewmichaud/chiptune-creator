@@ -1,3 +1,5 @@
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/300f2df040cf498eb21d479478a4aa18)](https://www.codacy.com/app/andrewjmichaud/chiptune-creator?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=andrewmichaud/chiptune-creator&amp;utm_campaign=Badge_Grade)
+
 # chiptune
 This is a language for writing music, intended for but not limited to "chiptune"
 music.
